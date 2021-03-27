@@ -41,4 +41,4 @@ for (Polygon polygon : polygons) {
 Result of getting whole polygons:
 ![Result with whole polygons](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/merge_all.png)
 
-The table, cells, and borders that are used for calculations are extended from `Actor`, you can add `CellList` to the scene and debug them to see their borders
+The table, cells, and borders that are used for calculations are extended from `Actor`, you can add `CellList` to the scene and debug them to see their borders.
