@@ -1,8 +1,7 @@
 # libgdx.polygon-generator
 A tool for generating polygons and then creating colliders.
 
-This can primarily be used to optimize collisions and is designed to work with Tiled (.tmx) maps.
-
+**This can primarily be used to optimize collisions and is designed to work with Tiled (.tmx) maps.**
 Since each map in Tiled is created from tiles, and often there are a lot of such tiles, it is unprofitable to assign a collision to each tile. In addition, this can lead to problems with a collision out of the blue: https://www.iforce2d.net/b2dtut/ghost-vertices, it looks something like this: ![Original tilemap](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/original.png)
 
 To minimize the load on creating colliders for all these objects, you should reduce the number of rectangles to a minimum.
@@ -24,9 +23,9 @@ for (Collision.CellList.Region region : regions) {
     shape.dispose();
 }
 ```
-As a result, you will transform all the tiles into a single body with multiple rectangular fixtures: ![Result with rect polygons](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/merge_rects.png)
+As a result, you will transform all the tiles into a single `Body` with multiple rectangular fixtures: ![Result with rect polygons](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/merge_rects.png)
 
-You can also get whole polygons of areas. However, if the shape is too complex and has more than 8 vertices, then it is not recommended to make a body out of it. This way you can get the perimeter of all the regions and their vertices respectively and do whatever you want with them:
+You can also get whole polygons of areas. However, if the shape is too complex and has more than 8 vertices, then it is **not recommended** to make a body out of it. This way you can get the perimeter of all the regions and their vertices respectively and do whatever you want with them:
 ```java
 // Getting polygons of all areas
 Array<Polygon> polygons = new CellList(tiledMapLayer).getPolygons();
