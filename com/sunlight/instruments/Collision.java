@@ -28,20 +28,22 @@ public class Collision {
      2. Получить все области и разбить их на как можно меньшее количество прямоугольных областей.
 
      @author aftern0on
-    ***/
+     ***/
 
     // Таблица объектов-коллизий
     public static class CellList extends Group {
+        private final Array<Polygon> polygons; // Найденые области
         private final Array<Region> regions; // Ряды тайлов
         private final Array<Cell.Bound> bounds; // Все найденные границы
         private final Cell[][] cells; // Таблица для взаимодействия с окружающими объектами
-        private HashMap<Constants.Position, Position[]> turns; // Приоритет поворотов для итерации границ
+        private HashMap<Constants.Position, Position[]> turns; // Повороты для итерации границ
 
         // Создаем таблицу клеток, итерация матрицы, поиск объектов
         public CellList(TiledMapTileLayer layer) {
-            bounds = new Array<>(); // Все возможные границы
             cells = new Cell[layer.getHeight() + 3][layer.getWidth() + 3];
+            bounds = new Array<>(); // Все возможные границы
             regions = new Array<>();
+            polygons = new Array<>();
             buildTurnPriority();
 
             // Создание клеток
@@ -51,7 +53,7 @@ public class Collision {
                     // В этом условии можно осуществить фильтр для получения нужных коллизий
                     // По умолчанию - все объекты
                     if (cell != null) {
-                        addCell(new Cell(this, x, y));
+                        addCell(new Cell(this, x - 1, y - 1));
                     }
                 }
             }
@@ -75,7 +77,16 @@ public class Collision {
                                 for (Cell.Bound overlap : bounds)
                                     bound.intersect(overlap);
 
+            createPolygons();
             foundRectangleRegions();
+        }
+
+        // Создать новый регион
+        private void addRegion(Cell start) {
+            Region region = new Region(start, this);
+            region.searchRow();
+            addActor(region);
+            regions.add(region);
         }
 
         // Поиск и объеденение всех регионов в более большие
@@ -85,9 +96,7 @@ public class Collision {
                 for (Cell element : row) {
                     if (element != null) {
                         if (element.region == null) {
-                            Region region = new Region(element);
-                            region.searchRow();
-                            regions.add(region);
+                            addRegion(element);
                         }
                     }
                 }
@@ -95,7 +104,6 @@ public class Collision {
 
             // Итерация регионов сверху вниз, поиск дчерних регионов и их слияние
             regions.reverse();
-
             for (Region parent : regions) {
                 // Проверка региона
                 // Если регион не является дочерним то он может являться родительским
@@ -142,10 +150,8 @@ public class Collision {
                     {Position.DOWN, Position.RIGHT, Position.LEFT, Position.TOP});
         }
 
-        // Получение полигонов областей
-        public Array<Polygon> getVertexes() {
-            Array<Polygon> areas = new Array<>();
-
+        // Создание полигонов областей
+        public void createPolygons() {
             // Прохождение по всем найденым областям
             for (Cell.Bound bound : bounds) {
                 if (!bound.used) {
@@ -170,12 +176,12 @@ public class Collision {
                                     // Проверка нахождения вершины на одной линии
                                     // В таком случае создавать вершину не нужно
                                     if (previous == null) {
-                                        temp.add(current.end.x - 1);
-                                        temp.add(current.end.y - 1);
+                                        temp.add(current.end.x + getX());
+                                        temp.add(current.end.y + getY());
                                     } else if (!(previous.end.x == next.end.x ||
                                             previous.end.y == next.end.y)) {
-                                        temp.add(current.end.x - 1);
-                                        temp.add(current.end.y - 1);
+                                        temp.add(current.end.x + getX());
+                                        temp.add(current.end.y + getY());
                                     }
                                     previous = current;
                                     current = next;
@@ -195,11 +201,14 @@ public class Collision {
                     Polygon area = new Polygon();
                     area.setVertices(vertices);
 
-                    areas.add(area);
+                    polygons.add(area);
                 }
             }
+        }
 
-            return areas;
+        // Получение всех полигонов
+        public Array<Polygon> getPolygons() {
+            return polygons;
         }
 
         // Получение всех прямоугольных областей
@@ -214,25 +223,27 @@ public class Collision {
 
         // Получить клетку из матрицы по позиции
         private Cell getCell(int x, int y) {
-            return cells[y][x];
+            return cells[y + 1][x + 1];
         }
 
         // Добавляет новые клетки в матрицу объектов, коллизии которых нужно слить
         private void addCell(Cell cell) {
-            cells[(int) cell.getY()][(int) cell.getX()] = cell;
+            cells[(int) cell.getY() + 1][(int) cell.getX() + 1] = cell;
             addActor(cell);
         }
 
         // Объект ряда клеток
         // Может являться родительским: содержит в себе всю площадь при объеденении.
-        private static class Region extends Group {
+        public static class Region extends Group {
             private boolean isParent; // Является ли регион родителским
             private Region merged; // Первый регион, с которого началось последующее слияние
             public Cell start, end; // Стартовая и конечная точки для определения пропорций региона
+            public CellList list; // Родительская таблица
 
-            public Region(Cell start) {
+            public Region(Cell start, CellList list) {
                 start.addToRegion(this);
                 this.isParent = false;
+                this.list = list;
                 this.merged = null;
                 this.start = start;
                 this.end = start;
@@ -249,10 +260,11 @@ public class Collision {
             public Polygon getPolygon() {
                 // Определение вершин
                 float[] vertices = new float[8];
-                vertices[0] = start.getX() - 1; vertices[1] = start.getY(); // Верхняя-правая
-                vertices[2] = end.getX(); vertices[3] = start.getY(); // Верхняя левая
-                vertices[4] = end.getX(); vertices[5] = end.getY() - 1; // Нижняя-левая
-                vertices[6] = start.getX() - 1; vertices[7] = end.getY() - 1; // Нижняя-правая
+
+                vertices[0] = start.getX() + list.getX(); vertices[1] = start.getY() + list.getY() + 1; // Верхняя-правая
+                vertices[2] = end.getX() + list.getX() + 1; vertices[3] = start.getY() + list.getY() + 1; // Верхняя левая
+                vertices[4] = end.getX() + list.getX() + 1; vertices[5] = end.getY() + list.getY(); // Нижняя-левая
+                vertices[6] = start.getX() + list.getX(); vertices[7] = end.getY() + list.getY(); // Нижняя-правая
 
                 // Возвращаемый полигон можно будет использовать для построения тела
                 return new Polygon(vertices);
