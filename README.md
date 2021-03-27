@@ -5,9 +5,9 @@ A tool for generating polygons and then creating colliders.
 Since each map in Tiled is created from tiles, and often there are a lot of such tiles, it is unprofitable to assign a collision to each tile. In addition, this can lead to problems with a collision out of the blue: https://www.iforce2d.net/b2dtut/ghost-vertices, it looks something like this: ![Original tilemap](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/original.png)
 
 To minimize the load on creating colliders for all these objects, you should reduce the number of rectangles to a minimum.
-You can get an array of the minimum number of rectangular polygons by giving the class your collision layer, and then iterate them to create the body:
+You can get an array of the minimum number of rectangular polygons by giving the class your collision layer, and then use regions to create the body:
 ```java
-// Getting regions
+// Getting rect regions
 Array<CellList.Region> regions = new CellList(tiledMapLayer).getRegions();
 
 // Create simple body
