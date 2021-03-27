@@ -5,7 +5,8 @@ This can primarily be used to optimize collisions and is designed to work with T
 
 Since each map in Tiled is created from tiles, and often there are a lot of such tiles, it is unprofitable to assign a collision to each tile. In addition, this can lead to problems with a collision out of the blue: https://www.iforce2d.net/b2dtut/ghost-vertices, it looks something like this: ![Original tilemap](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/original.png)
 
-To minimize the load on creating colliders for all these objects, you should reduce the number of rectangles to a minimum. You can get an array of the minimum number of rectangular polygons by giving the class your collision layer, and then iterate them to create the body (The table, cells, and borders that are used for calculations are extended from Actor, you can add them to the scene and debug them to see their borders):
+To minimize the load on creating colliders for all these objects, you should reduce the number of rectangles to a minimum.
+You can get an array of the minimum number of rectangular polygons by giving the class your collision layer, and then iterate them to create the body:
 ```java
 // Getting regions
 Array<CellList.Region> regions = new CellList(tiledMapLayer).getRegions();
@@ -39,3 +40,5 @@ for (Polygon polygon : polygons) {
 ```
 Result of getting whole polygons:
 ![Result with whole polygons](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/merge_all.png)
+
+The table, cells, and borders that are used for calculations are extended from `Actor`, you can add `CellList` to the scene and debug them to see their borders
