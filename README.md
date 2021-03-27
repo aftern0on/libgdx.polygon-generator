@@ -23,7 +23,7 @@ for (Collision.CellList.Region region : regions) {
     shape.dispose();
 }
 ```
-As a result, you will transform all the tiles into a single `Body` with multiple rectangular fixtures: ![Result with rect polygons](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/merge_rects.png)
+As a result, you will transform all the tiles into a single body with multiple rectangular fixtures: ![Result with rect polygons](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/merge_rects.png)
 
 You can also get whole polygons of areas. However, if the shape is too complex and has more than 8 vertices, then it is **not recommended** to make a body out of it. This way you can get the perimeter of all the regions and their vertices respectively and do whatever you want with them:
 ```java
@@ -40,4 +40,4 @@ for (Polygon polygon : polygons) {
 Result of getting whole polygons:
 ![Result with whole polygons](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/merge_all.png)
 
-The table, cells, and borders that are used for calculations are extended from `Actor`, you can add `CellList` to the scene and debug them to see their borders.
+The table, cells and borders that are used for calculations are extended from `Actor`, you can add `CellList` to the scene and debug them to see their borders.
