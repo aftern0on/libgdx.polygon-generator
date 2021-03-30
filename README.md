@@ -91,7 +91,7 @@ CellList list = new CellList(tiledMapLayer) {
     }
 }
 ```
-![Result with a inversible filter](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/filter_types.png)
+![Result with a inversible filter](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/filter_inverse.png)
 
 # Other
 The list, cells and borders that are used for calculations are extended from `Actor`, you can add `CellList` to the scene and debug them to see their borders.
