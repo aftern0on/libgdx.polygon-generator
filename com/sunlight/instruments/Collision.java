@@ -42,7 +42,6 @@ public class Collision {
 
         /** Creating a table of cells, iterating the matrix, searching for objects **/
         public CellList(TiledMapTileLayer layer) {
-            setPosition(1, 1);
             cells = new Cell[layer.getHeight() + 3][layer.getWidth() + 3];
             bounds = new Array<>();
             regions = new Array<>();
