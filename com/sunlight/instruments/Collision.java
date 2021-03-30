@@ -42,6 +42,7 @@ public class Collision {
 
         /** Creating a table of cells, iterating the matrix, searching for objects **/
         public CellList(TiledMapTileLayer layer) {
+            setPosition(1, 1);
             cells = new Cell[layer.getHeight() + 3][layer.getWidth() + 3];
             bounds = new Array<>();
             regions = new Array<>();
@@ -54,7 +55,8 @@ public class Collision {
                     TiledMapTileLayer.Cell cell = layer.getCell(x - 1, y - 1);
                     // This is where the filtering is performed
                     if (filter(cell, x, y)) {
-                        addCell(new Cell(this, x - 1, y - 1, cell.getTile()));
+                        addCell(new Cell(this, x - 1, y - 1,
+                                (cell != null) ? cell.getTile() : null));
                     }
                 }
             }
@@ -211,7 +213,6 @@ public class Collision {
                     // Converting Array<Float> to float[]
                     float[] vertices = new float[temp.size];
                     for (int index = 0; index < temp.size; index++) {
-                        System.out.print(temp.get(index) + " ");
                         vertices[index] = temp.get(index);
                     }
 
@@ -360,7 +361,7 @@ public class Collision {
 
             /** Add a bound to a cell **/
             public void addBound(Bound bound) {
-                addActor(bound);
+//                addActor(bound);
                 list.bounds.add(bound);
                 bounds.put(bound.getPosition(), bound);
             }
