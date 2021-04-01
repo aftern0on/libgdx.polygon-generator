@@ -1,17 +1,44 @@
 # libgdx.polygon-generator
 A tool for generating polygons and then creating colliders.
 
+[![](https://jitpack.io/v/aftern0on/libgdx.polygon-generator.svg)](https://jitpack.io/#aftern0on/libgdx.polygon-generator)
+
 [1. What is it for?](https://github.com/aftern0on/libgdx.polygon-generator#what-is-it-for)
 
-[2. Features of the tool](https://github.com/aftern0on/libgdx.polygon-generator#features-of-the-tool)
+[2. Installation](https://github.com/aftern0on/libgdx.polygon-generator#installation)
 
-[3. Filtering](https://github.com/aftern0on/libgdx.polygon-generator#filtering)
+[3. Features of the tool](https://github.com/aftern0on/libgdx.polygon-generator#features-of-the-tool)
 
-[4. Other](https://github.com/aftern0on/libgdx.polygon-generator#other)
+[4. Filtering](https://github.com/aftern0on/libgdx.polygon-generator#filtering)
+
+[5. Other](https://github.com/aftern0on/libgdx.polygon-generator#other)
 
 # What is it for?
 **This can primarily be used to optimize collisions and is designed to work with Tiled (.tmx) maps.**
 Since each map in Tiled is created from tiles, and often there are a lot of such tiles, it is unprofitable to assign a collision to each tile. In addition, this can lead to problems with a collision out of the blue: https://www.iforce2d.net/b2dtut/ghost-vertices, it looks something like this: ![Original tilemap](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/original.png)
+
+# Installation
+
+This tool can be downloaded via [jitpack](https://jitpack.io/#aftern0on/libgdx.polygon-generator).
+
+Make sure that you have jitpack defined as repository.
+
+```groovy
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+Add the dependency. If you're using libGDX you need to add it to the core module.
+```groovy
+dependencies {
+    implementation 'com.github.aftern0on:libgdx.polygon-generator:VERSION'
+}
+```
+
+Check the version tag above or [click here](https://jitpack.io/#aftern0on/libgdx.polygon-generator) for the version.
 
 # Features of the tool
 To minimize the load on creating colliders for all these objects, you should reduce the number of rectangles to a minimum.
