@@ -35,21 +35,6 @@ for (Collision.CellList.Region region : regions) {
 ```
 As a result, you will transform all the tiles into a single body with multiple rectangular fixtures: ![Result with rect polygons](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/merge_rects.png)
 
-You can also get whole polygons of areas. However, if the shape is too complex and has more than 8 vertices, then it is **not recommended** to make a body out of it. This way you can get the perimeter of all the regions and their vertices respectively and do whatever you want with them:
-```java
-// Getting polygons of all areas
-Array<Polygon> polygons = new CellList(tiledMapLayer).getPolygons();
-
-// Iterating polygons
-for (Polygon polygon : polygons) {
-    // Getting the vertices of a region
-    float[] vertex = polygon.getVertices();
-    ...
-}
-```
-Result of getting whole polygons:
-![Result with whole polygons](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/merge_all.png)
-
 # Filtering
 Filtering will help you determine which objects should be taken into account when generating polygons. When iterating through all the objects of the matrix, the `filter()` function is executed, which decides whether to consider the object as part of the polygon. If the function returns `true`, the object is taken into account, if `false`, it is not. By default, the function always returns `true`. You can override this function to decide which objects should not be part of the polygon:
 ```java
@@ -100,6 +85,3 @@ CellList list = new CellList(tiledMapLayer) {
 }
 ```
 ![Result with a inversible filter](https://github.com/aftern0on/libgdx.polygon-generator/blob/main/img/filter_inverse.png)
-
-# Other
-The list, cells and borders that are used for calculations are extended from `Actor`, you can add `CellList` to the scene and debug them to see their borders.
